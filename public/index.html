@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sala de chat</title>
+
+    <style>
+        li {
+            list-style: none;
+            border-bottom: 1px solid gray;
+            margin-bottom: 1em;
+            padding: 0.3em 0.5em;
+        }
+    </style>
+
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <h1>Bienvenido al chat</h1>
+    <form onsubmit="enviarMensaje(event)">
+        <div id="env-msjs">
+            <input type="text" id="nombre" placeholder="ingresa tu nombre">
+            <input id="nuevo-msj" autofocus placeholder="Nuevo mensaje">
+            <button id="btn-msj" type="submit" onclick="">Enviar</button>
+        </div>
+    </form>
+
+    <h3>Lista de mensajes</h3>
+    <ul id="listado-msjs">
+
+    </ul>
+
+    <script>
+        let socket = io.connect('http://localhost:8080', {
+            forceNew: true,
+        })
+
+        socket.on('nuevo mensaje', (data) => {
+            const li = document.createElement('li')
+            li.innerText = data
+            document.getElementById('listado-msjs').append(li)
+            document.getElementById('nuevo-msj').value = ''
+        }
+        )
+
+        function enviarMensaje(event) {
+            event.preventDefault()
+            const nombre = document.getElementById('nombre').value
+            document.getElementById('nombre').disabled = true
+            const mensaje = document.getElementById('nuevo-msj').value
+
+            socket.emit('nuevo mensaje', nombre + ': ' + mensaje)
+
+            console.log(document.getElementById('nuevo-msj').value)
+        }
+
+
+    </script>
+</body>
+
+</html>
